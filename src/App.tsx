@@ -6,6 +6,7 @@ import { Layout } from './Layout';
 import { Home } from './pages/Home';
 import { Work } from './pages/Work';
 import { Studio } from './pages/Studio';
+import { Dev } from './pages/Dev';
 import { Contact } from './pages/Contact';
 import { ErrorPage } from './pages/ErrorPage';
 import { NotFound } from './pages/NotFound';
@@ -31,6 +32,10 @@ const router = createHashRouter([
       {
         path: "studio",
         element: <Studio />,
+      },
+      {
+        path: "dev",
+        element: <Dev />,
       },
       {
         path: "contact",

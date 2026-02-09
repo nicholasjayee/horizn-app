@@ -5,27 +5,28 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 // Simulate a critical system check or asset preparation using suspend-react
 // This ensures the loader stays up for at least a small duration to look cool
-const systemCheck = () => new Promise<void>((resolve) => setTimeout(resolve, 2000));
+const systemCheck = () => new Promise<void>((resolve) => setTimeout(resolve, 1200));
 
 export const LoadingScreen: React.FC = () => {
   const { progress, active } = useProgress();
   const [finished, setFinished] = useState(false);
 
-  // Trigger suspend to ensure boot sequence runs once
+  // Trigger suspend to ensure boot sequence runs on every mount (page load)
   try {
-     suspend(systemCheck, ['boot-sequence']);
+     suspend(systemCheck, ['boot-sequence-' + Math.random()]);
   } catch (e) {
      // suspend throws a promise
   }
 
   useEffect(() => {
+    // Reset finished state on mount
+    setFinished(false);
+    
     // Only finish when progress is 100 AND we aren't active
+    // We also add a small delay to ensure the animation plays out
     if (progress === 100 && !active) {
-       const timer = setTimeout(() => setFinished(true), 1500); // 1.5s delay after load for effect
+       const timer = setTimeout(() => setFinished(true), 1500);
        return () => clearTimeout(timer);
-    }
-    if (active) {
-        setFinished(false);
     }
   }, [progress, active]);
 

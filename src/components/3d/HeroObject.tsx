@@ -97,6 +97,14 @@ export const HeroObject: React.FC = () => {
            if (laptopRef.current) gsap.to(laptopRef.current.scale, { x: 0, y: 0, z: 0, duration, ease });
            if (phoneRef.current) gsap.to(phoneRef.current.scale, { x: 0, y: 0, z: 0, duration, ease });
            break;
+
+        case AppStage.HIDDEN:
+           if (meshRef.current) {
+               gsap.to(meshRef.current.scale, { x: 0, y: 0, z: 0, duration, ease });
+           }
+           if (laptopRef.current) gsap.to(laptopRef.current.scale, { x: 0, y: 0, z: 0, duration, ease });
+           if (phoneRef.current) gsap.to(phoneRef.current.scale, { x: 0, y: 0, z: 0, duration, ease });
+           break;
       }
     });
     return () => ctx.revert();
@@ -125,7 +133,7 @@ export const HeroObject: React.FC = () => {
         
         // Rotation
         meshRef.current.rotation.y = (scrollProgress * Math.PI * 2);
-    } else {
+    } else if (currentStage !== AppStage.HIDDEN) {
         // Floating rotation
         meshRef.current.rotation.y += delta * 0.1;
     }

@@ -34,7 +34,7 @@ const Card3D = ({ member }: { member: any }) => {
     <motion.div
       style={{
         perspective: 1000,
-      }}
+      } as any}
       className="w-80 h-[460px] cursor-pointer group relative z-10"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -45,15 +45,17 @@ const Card3D = ({ member }: { member: any }) => {
           rotateX,
           rotateY,
           transformStyle: "preserve-3d",
-        }}
+        } as any}
         className="w-full h-full relative transition-all duration-200"
       >
         {/* Flipping Container */}
         <motion.div
            className="w-full h-full relative"
            style={{ transformStyle: "preserve-3d" }}
-           animate={{ rotateY: flipped ? 180 : 0 }}
-           transition={{ duration: 0.6, type: "spring", stiffness: 260, damping: 20 }}
+           {...({
+             animate: { rotateY: flipped ? 180 : 0 },
+             transition: { duration: 0.6, type: "spring", stiffness: 260, damping: 20 }
+           } as any)}
         >
             {/* FRONT FACE */}
             <div 
@@ -111,9 +113,11 @@ const Card3D = ({ member }: { member: any }) => {
                             </div>
                             <div className="h-0.5 w-full bg-white/10 rounded-full overflow-hidden">
                                 <motion.div 
-                                  initial={{ width: 0 }} 
-                                  animate={{ width: flipped ? '80%' : 0 }} 
-                                  transition={{ delay: 0.2, duration: 1 }}
+                                  {...({
+                                    initial: { width: 0 },
+                                    animate: { width: flipped ? '80%' : 0 },
+                                    transition: { delay: 0.2, duration: 1 }
+                                  } as any)}
                                   className="h-full bg-white/60 shadow-[0_0_10px_white]" 
                                 />
                             </div>
@@ -126,9 +130,11 @@ const Card3D = ({ member }: { member: any }) => {
                             </div>
                             <div className="h-0.5 w-full bg-white/10 rounded-full overflow-hidden">
                                 <motion.div 
-                                  initial={{ width: 0 }} 
-                                  animate={{ width: flipped ? '95%' : 0 }} 
-                                  transition={{ delay: 0.4, duration: 1 }}
+                                  {...({
+                                    initial: { width: 0 },
+                                    animate: { width: flipped ? '95%' : 0 },
+                                    transition: { delay: 0.4, duration: 1 }
+                                  } as any)}
                                   className="h-full bg-horizn-accent shadow-[0_0_10px_#00ff88]" 
                                 />
                             </div>
@@ -155,12 +161,37 @@ const Card3D = ({ member }: { member: any }) => {
   );
 };
 
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2
+    }
+  }
+}
+
+const item = {
+  hidden: { opacity: 0, y: 50 },
+  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 50 } }
+}
+
 export const TeamCards: React.FC = () => {
   return (
-    <div className="flex flex-wrap justify-center gap-12 py-12 perspective-[2000px]">
+    <motion.div 
+      {...({
+        variants: container,
+        initial: "hidden",
+        whileInView: "show",
+        viewport: { once: true }
+      } as any)}
+      className="flex flex-wrap justify-center gap-12 py-12 perspective-[2000px]"
+    >
       {TEAM_MEMBERS.map((member) => (
-        <Card3D key={member.id} member={member} />
+        <motion.div key={member.id} variants={item as any}>
+            <Card3D member={member} />
+        </motion.div>
       ))}
-    </div>
+    </motion.div>
   );
 };

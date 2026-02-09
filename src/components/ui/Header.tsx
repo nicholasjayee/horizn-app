@@ -21,6 +21,7 @@ export const Header: React.FC = () => {
         <Link to="/" className={`${isActive('/')} transition-colors`}>PROCESS</Link>
         <Link to="/work" className={`${isActive('/work')} transition-colors`}>WORK</Link>
         <Link to="/studio" className={`${isActive('/studio')} transition-colors`}>STUDIO</Link>
+        <Link to="/dev" className={`${isActive('/dev')} transition-colors`}>DEV</Link>
         <Link to="/contact" className={`${isActive('/contact')} transition-colors`}>CONTACT</Link>
       </nav>
 
@@ -34,6 +35,7 @@ export const Header: React.FC = () => {
           <Link to="/" onClick={toggleMenu}>PROCESS</Link>
           <Link to="/work" onClick={toggleMenu}>WORK</Link>
           <Link to="/studio" onClick={toggleMenu}>STUDIO</Link>
+          <Link to="/dev" onClick={toggleMenu}>DEV</Link>
           <Link to="/contact" onClick={toggleMenu}>CONTACT</Link>
         </div>
       )}

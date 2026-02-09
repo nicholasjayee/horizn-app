@@ -78,8 +78,10 @@ export const PriceCalculator: React.FC = () => {
         <span className="text-sm text-white/50 font-mono">ESTIMATED COST</span>
         <motion.span 
           key={total}
-          initial={{ scale: 1.2, color: '#ffffff' }}
-          animate={{ scale: 1, color: '#00ff88' }}
+          {...({
+            initial: { scale: 1.2, color: '#ffffff' },
+            animate: { scale: 1, color: '#00ff88' }
+          } as any)}
           className="text-3xl font-bold font-mono text-horizn-accent"
         >
           ${total > 0 ? total.toLocaleString() : '0'}

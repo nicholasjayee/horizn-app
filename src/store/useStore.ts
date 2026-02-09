@@ -5,7 +5,8 @@ export enum AppStage {
   CODE = 1,
   MOTION = 2,
   POLISH = 3,
-  PRODUCT = 4
+  PRODUCT = 4,
+  HIDDEN = 5
 }
 
 interface AppState {
