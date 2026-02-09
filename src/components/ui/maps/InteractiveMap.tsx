@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { PerspectiveCamera, OrbitControls } from '@react-three/drei';

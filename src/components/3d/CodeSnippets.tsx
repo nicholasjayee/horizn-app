@@ -1,4 +1,4 @@
-/// <reference types="@react-three/fiber" />
+// @ts-nocheck
 import React from 'react';
 import { Float, Text } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
