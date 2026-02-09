@@ -1,8 +1,5 @@
-// @ts-nocheck
 import React, { useEffect, useLayoutEffect, useRef } from 'react';
 import { useStore, AppStage } from '../store/useStore';
-import { PROJECTS } from '../data/mockData';
-import { VideoScrubber } from '../components/ui/tools/VideoScrubber';
 import { SceneContainer } from '../components/3d/SceneContainer';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -10,8 +7,12 @@ import { PerspectiveCamera, Environment, Float, MeshDistortMaterial } from '@rea
 import { EffectComposer, Noise, Vignette } from '@react-three/postprocessing';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { SelectedWorkSection } from './sections/work/SelectedWorkSection';
+import { ProjectArchiveSection } from './sections/work/ProjectArchiveSection';
 
 gsap.registerPlugin(ScrollTrigger);
+
+// --- 3D Background Components ---
 
 const CustomModel = () => {
   const group = useRef<THREE.Group>(null);
@@ -85,6 +86,8 @@ const WorkExperience = () => (
   </>
 );
 
+// --- Main Page Component ---
+
 export const Work: React.FC = () => {
   const setStage = useStore(state => state.setStage);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -100,35 +103,6 @@ export const Work: React.FC = () => {
         { y: 100, opacity: 0, rotateX: -20 },
         { y: 0, opacity: 1, rotateX: 0, duration: 1.5, ease: "power4.out" }
       );
-
-      // Animate project cards with scroll scrubbing
-      const cards = gsap.utils.toArray('.project-card');
-      cards.forEach((card: any, i) => {
-        gsap.fromTo(card,
-          { 
-            y: 150, 
-            opacity: 0, 
-            scale: 0.9,
-            transformPerspective: 1000,
-            rotateX: 15
-          },
-          {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            rotateX: 0,
-            duration: 1,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: card,
-              start: "top 95%", // Start animation when top of card hits bottom 5% of viewport
-              end: "top 60%",   // End animation when top of card hits 60% of viewport
-              scrub: 1,         // Smooth scrubbing effect
-              toggleActions: "play reverse play reverse"
-            }
-          }
-        );
-      });
 
       // Animate footer text
       gsap.fromTo('.work-footer',
@@ -164,15 +138,11 @@ export const Work: React.FC = () => {
                 </h1>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-20">
-                {PROJECTS.map((project, index) => (
-                  <div key={project.id} className="project-card will-change-transform">
-                    <VideoScrubber {...project} />
-                  </div>
-                ))}
-              </div>
+              <SelectedWorkSection />
               
-              <div className="work-footer pt-20 border-t border-white/10 mt-20">
+              <ProjectArchiveSection />
+
+              <div className="work-footer pt-12 border-t border-white/10 mt-12">
                 <p className="text-xl text-white/60 max-w-2xl">
                   Our portfolio spans across fintech, fashion, and futuristic interfaces. We don't just build websites; we build worlds.
                 </p>
