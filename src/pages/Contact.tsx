@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useStore, AppStage } from '../store/useStore';
 import { PriceCalculator } from '../components/ui/tools/PriceCalculator';
+import { ContactForm } from '../components/ui/ContactForm';
 import { InteractiveMap } from '../components/ui/maps/InteractiveMap';
 import { motion } from 'framer-motion';
 import { LoadingScreen } from '../components/ui/LoadingScreen';
@@ -44,31 +45,34 @@ export const Contact: React.FC = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start pt-12">
                 
                 <div className="space-y-12">
+                    <ContactForm />
+
                     <div>
-                        <h2 className="text-3xl font-bold mb-6">Connect</h2>
-                        <p className="text-white/70 mb-8 leading-relaxed">
-                          Whether you need a full digital transformation or a specific WebGL campaign, our network of specialists is ready to deploy.
-                        </p>
+                        <div className="flex items-center gap-4 mb-8">
+                             <div className="h-px bg-white/10 flex-grow" />
+                             <span className="text-xs font-mono text-white/40 uppercase">Or Direct Channel</span>
+                             <div className="h-px bg-white/10 flex-grow" />
+                        </div>
                         
-                        <div className="space-y-6 font-mono text-sm border-l border-white/10 pl-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 font-mono text-sm">
                           <div className="group">
-                            <span className="text-xs text-horizn-accent block mb-1">GENERAL INQUIRIES</span>
-                            <a href="mailto:hello@horizn.studio" className="text-lg hover:text-white transition-colors">hello@horizn.studio</a>
+                            <span className="text-[10px] text-horizn-accent block mb-1">GENERAL INQUIRIES</span>
+                            <a href="mailto:hello@horizn.studio" className="text-sm hover:text-white text-white/70 transition-colors">hello@horizn.studio</a>
                           </div>
                           <div className="group">
-                            <span className="text-xs text-horizn-accent block mb-1">NEW BUSINESS</span>
-                            <a href="mailto:growth@horizn.studio" className="text-lg hover:text-white transition-colors">growth@horizn.studio</a>
+                            <span className="text-[10px] text-horizn-accent block mb-1">NEW BUSINESS</span>
+                            <a href="mailto:growth@horizn.studio" className="text-sm hover:text-white text-white/70 transition-colors">growth@horizn.studio</a>
                           </div>
                           <div className="group">
-                            <span className="text-xs text-horizn-accent block mb-1">CAREERS</span>
-                            <a href="mailto:talent@horizn.studio" className="text-lg hover:text-white transition-colors">talent@horizn.studio</a>
+                            <span className="text-[10px] text-horizn-accent block mb-1">CAREERS</span>
+                            <a href="mailto:talent@horizn.studio" className="text-sm hover:text-white text-white/70 transition-colors">talent@horizn.studio</a>
                           </div>
                         </div>
                     </div>
 
-                    <div className="flex gap-4">
+                    <div className="flex gap-4 pt-4 border-t border-white/10">
                         {['Twitter', 'Instagram', 'LinkedIn', 'Github'].map(social => (
-                            <button key={social} className="px-4 py-2 border border-white/10 rounded-full hover:bg-white hover:text-black transition-all text-xs font-bold uppercase tracking-widest">
+                            <button key={social} className="px-4 py-2 border border-white/10 rounded-full hover:bg-white hover:text-black transition-all text-[10px] font-bold uppercase tracking-widest text-white/50">
                                 {social}
                             </button>
                         ))}

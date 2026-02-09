@@ -24,6 +24,7 @@ export const Header: React.FC = () => {
         <Link to="/work" className={`${isActive('/work')} transition-colors`}>WORK</Link>
         <Link to="/studio" className={`${isActive('/studio')} transition-colors`}>STUDIO</Link>
         <Link to="/dev" className={`${isActive('/dev')} transition-colors`}>DEV</Link>
+        <Link to="/blog" className={`${isActive('/blog')} transition-colors`}>BLOG</Link>
         <Link to="/contact" className={`${isActive('/contact')} transition-colors`}>CONTACT</Link>
       </nav>
 
@@ -39,6 +40,7 @@ export const Header: React.FC = () => {
           <Link to="/work" onClick={toggleMenu} className="text-3xl font-bold tracking-tighter hover:text-horizn-accent transition-colors">WORK</Link>
           <Link to="/studio" onClick={toggleMenu} className="text-3xl font-bold tracking-tighter hover:text-horizn-accent transition-colors">STUDIO</Link>
           <Link to="/dev" onClick={toggleMenu} className="text-3xl font-bold tracking-tighter hover:text-horizn-accent transition-colors">DEV</Link>
+          <Link to="/blog" onClick={toggleMenu} className="text-3xl font-bold tracking-tighter hover:text-horizn-accent transition-colors">BLOG</Link>
           <Link to="/contact" onClick={toggleMenu} className="text-3xl font-bold tracking-tighter hover:text-horizn-accent transition-colors">CONTACT</Link>
           
           <div className="absolute bottom-12 text-xs font-mono text-white/40">
