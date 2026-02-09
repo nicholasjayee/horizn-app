@@ -19,6 +19,8 @@ const ServerBlock = ({ position, type, name }: any) => {
   const height = isHub ? 1.5 : 0.8;
   const color = isHub ? '#00ff88' : type === 'Storage' ? '#ffaa00' : '#00aaff';
   
+  if (!position) return null;
+
   return (
     <group position={position}>
       {/* Base */}
@@ -61,6 +63,7 @@ const ServerBlock = ({ position, type, name }: any) => {
 };
 
 const ConnectionLine = ({ start, end }: { start: THREE.Vector3, end: THREE.Vector3 }) => {
+   if (!start || !end) return null;
    const s = start.clone().setY(0.2);
    const e = end.clone().setY(0.2);
    
@@ -78,11 +81,15 @@ const Packet = ({ start, end }: { start: THREE.Vector3, end: THREE.Vector3 }) =>
   const offset = Math.random();
   
   useFrame((state) => {
-    if (ref.current) {
+    // Robust safety check
+    const mesh = ref.current;
+    if (mesh && start && end) {
       const t = (state.clock.elapsedTime * speed + offset) % 1;
-      ref.current.position.lerpVectors(start, end, t);
+      mesh.position.lerpVectors(start, end, t);
     }
   });
+
+  if (!start || !end) return null;
 
   return (
     <mesh ref={ref}>
@@ -104,21 +111,29 @@ export const NetworkMap: React.FC = () => {
      const lines: {start: THREE.Vector3, end: THREE.Vector3}[] = [];
      const hubs = nodes.filter(n => n.region === 'Hub' || n.region === 'HQ');
      
-     nodes.forEach(node => {
-        if (node.region !== 'Hub' && node.region !== 'HQ') {
-            // Connect to nearest hub for realistic topology
-            const nearestHub = hubs.sort((a,b) => a.pos.distanceTo(node.pos) - b.pos.distanceTo(node.pos))[0];
-            if (nearestHub) {
-                lines.push({ start: nearestHub.pos, end: node.pos });
+     if (hubs.length > 0) {
+         nodes.forEach(node => {
+            if (node.region !== 'Hub' && node.region !== 'HQ') {
+                // Connect to nearest hub for realistic topology.
+                // We map to distances first to avoid accessing undefined props in sort comparator
+                const nearestHub = [...hubs].sort((a,b) => {
+                    const distA = a.pos ? a.pos.distanceTo(node.pos) : Infinity;
+                    const distB = b.pos ? b.pos.distanceTo(node.pos) : Infinity;
+                    return distA - distB;
+                })[0];
+
+                if (nearestHub && nearestHub.pos && node.pos) {
+                    lines.push({ start: nearestHub.pos, end: node.pos });
+                }
+            } else if (node.region === 'Hub') {
+                // Connect hubs to HQ (Los Angeles)
+                const hq = nodes.find(n => n.region === 'HQ');
+                if (hq && hq !== node && hq.pos && node.pos) {
+                     lines.push({ start: hq.pos, end: node.pos });
+                }
             }
-        } else if (node.region === 'Hub') {
-            // Connect hubs to HQ (Los Angeles)
-            const hq = nodes.find(n => n.region === 'HQ');
-            if (hq && hq !== node) {
-                 lines.push({ start: hq.pos, end: node.pos });
-            }
-        }
-     });
+         });
+     }
      return lines;
   }, [nodes]);
 

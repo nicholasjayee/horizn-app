@@ -1,11 +1,10 @@
 // @ts-nocheck
-import React, { useState, Suspense, useRef, useEffect } from 'react';
+import React, { useState, Suspense, useRef, useEffect, useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { PerspectiveCamera, OrbitControls } from '@react-three/drei';
 import { Globe3D } from './Globe3D';
 import { FlatMap } from './FlatMap';
 import { NetworkMap } from './NetworkMap';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Globe, Map as MapIcon, Share2, Plus, Minus } from 'lucide-react';
 
 // Wrapper to handle programmatic zoom since buttons are outside Canvas
@@ -14,57 +13,63 @@ const MapControls = ({ viewMode, zoomTrigger }: { viewMode: string, zoomTrigger:
 
     useEffect(() => {
         if (zoomTrigger && controlsRef.current) {
-            const step = 1.4; // Zoom step factor
+            // Zoom step factor
+            const step = 1.2; 
+            
+            // Note: Logic swapped based on user feedback that previous configuration was reversed.
+            // 'in' (Plus) should Zoom In. 'out' (Minus) should Zoom Out.
+            // If dollyIn was causing Zoom Out previously, we use dollyOut here to correct it.
             if (zoomTrigger.dir === 'in') {
-                controlsRef.current.dollyIn(step);
+                controlsRef.current?.dollyOut(step);
             } else {
-                controlsRef.current.dollyOut(step);
+                controlsRef.current?.dollyIn(step);
             }
-            controlsRef.current.update();
+            controlsRef.current?.update();
         }
     }, [zoomTrigger]);
 
-    // Return specific controls configuration based on active mode
-    if (viewMode === '3d') {
-        return (
-            <OrbitControls 
-                ref={controlsRef}
-                enableZoom={false} // Disable scroll zoom
-                enablePan={false} 
-                minPolarAngle={Math.PI / 3} 
-                maxPolarAngle={Math.PI - Math.PI / 3} 
-                minDistance={2.5}
-                maxDistance={12}
-            />
-        );
-    }
+    // Compute props based on viewMode
+    const controlsProps = useMemo(() => {
+        if (viewMode === '3d') {
+            return {
+                enableZoom: false,
+                enablePan: false,
+                minPolarAngle: Math.PI / 3,
+                maxPolarAngle: Math.PI - Math.PI / 3,
+                minDistance: 2.5,
+                maxDistance: 12,
+                enableRotate: true,
+            };
+        }
+        if (viewMode === '2d') {
+            return {
+                enableRotate: false,
+                enableZoom: false,
+                enablePan: true,
+                minDistance: 2,
+                maxDistance: 7,
+            };
+        }
+        if (viewMode === 'network') {
+            return {
+                enableRotate: true,
+                enableZoom: false,
+                enablePan: true,
+                maxPolarAngle: Math.PI / 2.1,
+                minDistance: 5,
+                maxDistance: 35,
+            };
+        }
+        return {};
+    }, [viewMode]);
 
-    if (viewMode === '2d') {
-        return (
-            <OrbitControls 
-                ref={controlsRef}
-                enableRotate={false} 
-                enableZoom={false} // Disable scroll zoom
-                minDistance={2}
-                maxDistance={7}
-            />
-        );
-    }
-
-    if (viewMode === 'network') {
-        return (
-            <OrbitControls 
-                ref={controlsRef}
-                enableRotate={true} 
-                enableZoom={false} // Disable scroll zoom
-                maxPolarAngle={Math.PI / 2.1} 
-                minDistance={5}
-                maxDistance={35}
-            />
-        );
-    }
-
-    return null;
+    return (
+        <OrbitControls 
+            key={viewMode} // CRITICAL: Force remount of controls when view mode changes to prevent stale camera state
+            ref={controlsRef}
+            {...controlsProps}
+        />
+    );
 };
 
 export const InteractiveMap: React.FC = () => {
@@ -78,8 +83,8 @@ export const InteractiveMap: React.FC = () => {
   return (
     <div className="w-full h-[500px] md:h-[600px] relative rounded-2xl overflow-hidden border border-white/10 bg-black/40 backdrop-blur-sm group">
       
-      {/* UI Controls */}
-      <div className="absolute top-6 right-6 z-20 flex flex-col gap-6">
+      {/* UI Controls - High Z-index to overlay map labels */}
+      <div className="absolute top-6 right-6 z-[100] flex flex-col gap-6">
           {/* View Mode Switcher */}
           <div className="flex flex-col gap-2">
             <button 
@@ -149,21 +154,19 @@ export const InteractiveMap: React.FC = () => {
             <MapControls viewMode={viewMode} zoomTrigger={zoomTrigger} />
 
             <Suspense fallback={null}>
-                <AnimatePresence mode="wait">
-                    {viewMode === '3d' && (
-                        <Globe3D key="globe" />
-                    )}
-                    {viewMode === '2d' && (
-                        <group key="flat" rotation={[0, 0, 0]}>
-                            <FlatMap />
-                        </group>
-                    )}
-                    {viewMode === 'network' && (
-                        <group key="network">
-                            <NetworkMap />
-                        </group>
-                    )}
-                </AnimatePresence>
+                {viewMode === '3d' && (
+                    <Globe3D key="globe" />
+                )}
+                {viewMode === '2d' && (
+                    <group key="flat" rotation={[0, 0, 0]}>
+                        <FlatMap />
+                    </group>
+                )}
+                {viewMode === 'network' && (
+                    <group key="network">
+                        <NetworkMap />
+                    </group>
+                )}
             </Suspense>
         </Canvas>
       </div>

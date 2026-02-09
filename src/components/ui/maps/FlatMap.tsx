@@ -16,9 +16,11 @@ export const FlatMap: React.FC = () => {
   // Animated scanline
   const scanlineRef = useRef<THREE.Mesh>(null);
   useFrame((state) => {
-      if (scanlineRef.current) {
+      // Explicitly check if the mesh is available
+      const mesh = scanlineRef.current;
+      if (mesh) {
           // Move scanline up and down
-          scanlineRef.current.position.y = (Math.sin(state.clock.elapsedTime * 0.2) * (height / 2.2));
+          mesh.position.y = (Math.sin(state.clock.elapsedTime * 0.2) * (height / 2.2));
       }
   });
 
