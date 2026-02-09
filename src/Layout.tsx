@@ -5,6 +5,7 @@ import { Perf } from 'r3f-perf';
 import * as THREE from 'three';
 import { Experience } from './components/3d/Experience';
 import { Header } from './components/ui/Header';
+import { Footer } from './components/ui/Footer';
 import { LoadingScreen } from './components/ui/LoadingScreen';
 
 export const Layout: React.FC = () => {
@@ -39,9 +40,12 @@ export const Layout: React.FC = () => {
       </div>
 
       {/* Main Content Area */}
-      <main className="relative z-10 w-full min-h-screen pt-20">
-        <Outlet />
-      </main>
+      <div className="relative z-10 flex flex-col min-h-screen">
+        <main className="w-full flex-grow pt-20">
+          <Outlet />
+        </main>
+        <Footer />
+      </div>
     </>
   );
 };
