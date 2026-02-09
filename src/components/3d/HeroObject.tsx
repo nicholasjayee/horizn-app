@@ -3,16 +3,21 @@ import React, { useRef, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useStore, AppStage } from '../../store/useStore';
 import * as THREE from 'three';
-import { MeshDistortMaterial, Float } from '@react-three/drei';
+import { Float } from '@react-three/drei';
 import { Laptop } from './devices/Laptop';
 import { Phone } from './devices/Phone';
+import { ProcessModel } from './models/ProcessModel';
+import { FluidParticles } from './models/FluidParticles';
+import { ArchitectureModel } from './models/ArchitectureModel';
 import gsap from 'gsap';
 
 export const HeroObject: React.FC = () => {
-  const meshRef = useRef<THREE.Mesh>(null);
+  const meshRef = useRef<THREE.Group>(null);
   const materialRef = useRef<any>(null);
   const laptopRef = useRef<THREE.Group>(null);
   const phoneRef = useRef<THREE.Group>(null);
+  const fluidRef = useRef<THREE.Group>(null);
+  const architectureRef = useRef<THREE.Group>(null);
   
   const currentStage = useStore(state => state.currentStage);
   
@@ -32,11 +37,14 @@ export const HeroObject: React.FC = () => {
            if (materialRef.current) {
                const c = new THREE.Color('#ffffff');
                gsap.to(materialRef.current.color, { r: c.r, g: c.g, b: c.b, duration, ease });
-               gsap.to(materialRef.current, { roughness: 0.8, metalness: 0.1, distort: 0, duration, ease });
+               gsap.to(materialRef.current, { roughness: 0.8, metalness: 0.1, distort: 0.3, duration, ease });
                materialRef.current.wireframe = true;
            }
+           // Hide others
            if (laptopRef.current) gsap.to(laptopRef.current.scale, { x: 0, y: 0, z: 0, duration, ease });
            if (phoneRef.current) gsap.to(phoneRef.current.scale, { x: 0, y: 0, z: 0, duration, ease });
+           if (fluidRef.current) gsap.to(fluidRef.current.scale, { x: 0, y: 0, z: 0, duration, ease });
+           if (architectureRef.current) gsap.to(architectureRef.current.scale, { x: 0, y: 0, z: 0, duration, ease });
            break;
 
         case AppStage.CODE:
@@ -44,27 +52,31 @@ export const HeroObject: React.FC = () => {
                gsap.to(meshRef.current.scale, { x: 0, y: 0, z: 0, duration, ease: "back.in(1)" });
                gsap.to(meshRef.current.position, { x: 2, y: 0, z: 0, duration, ease });
            }
-           if (materialRef.current) {
-               const c = new THREE.Color('#888888');
-               gsap.to(materialRef.current.color, { r: c.r, g: c.g, b: c.b, duration, ease });
-               materialRef.current.wireframe = false;
-           }
-           if (laptopRef.current) gsap.to(laptopRef.current.scale, { x: 1, y: 1, z: 1, duration, ease: elastic });
+           // Hide devices
+           if (laptopRef.current) gsap.to(laptopRef.current.scale, { x: 0, y: 0, z: 0, duration, ease }); // Replaced Laptop
            if (phoneRef.current) gsap.to(phoneRef.current.scale, { x: 0, y: 0, z: 0, duration: 0.5 });
+           if (fluidRef.current) gsap.to(fluidRef.current.scale, { x: 0, y: 0, z: 0, duration, ease });
+           
+           // Show Architecture Model
+           if (architectureRef.current) {
+               gsap.to(architectureRef.current.scale, { x: 1.2, y: 1.2, z: 1.2, duration, ease: elastic });
+               gsap.to(architectureRef.current.position, { x: 2, y: 0, z: 0, duration, ease });
+           }
            break;
 
         case AppStage.MOTION:
            if (meshRef.current) {
                gsap.to(meshRef.current.scale, { x: 0, y: 0, z: 0, duration, ease: "back.in(1)" });
-               gsap.to(meshRef.current.position, { x: -2, y: 0, z: 0, duration, ease });
-           }
-           if (materialRef.current) {
-               const c = new THREE.Color('#00ff88');
-               gsap.to(materialRef.current.color, { r: c.r, g: c.g, b: c.b, duration, ease });
-               materialRef.current.wireframe = false;
            }
            if (laptopRef.current) gsap.to(laptopRef.current.scale, { x: 0, y: 0, z: 0, duration: 0.5 });
-           if (phoneRef.current) gsap.to(phoneRef.current.scale, { x: 1, y: 1, z: 1, duration, ease: elastic });
+           if (phoneRef.current) gsap.to(phoneRef.current.scale, { x: 0, y: 0, z: 0, duration: 0.5 });
+           if (architectureRef.current) gsap.to(architectureRef.current.scale, { x: 0, y: 0, z: 0, duration, ease });
+           
+           // Show Fluid Particles
+           if (fluidRef.current) {
+               gsap.to(fluidRef.current.scale, { x: 1, y: 1, z: 1, duration, ease });
+               gsap.to(fluidRef.current.position, { x: 0, y: 0, z: 0, duration, ease });
+           }
            break;
 
         case AppStage.POLISH:
@@ -81,6 +93,8 @@ export const HeroObject: React.FC = () => {
            }
            if (laptopRef.current) gsap.to(laptopRef.current.scale, { x: 0, y: 0, z: 0, duration, ease });
            if (phoneRef.current) gsap.to(phoneRef.current.scale, { x: 0, y: 0, z: 0, duration, ease });
+           if (fluidRef.current) gsap.to(fluidRef.current.scale, { x: 0, y: 0, z: 0, duration, ease });
+           if (architectureRef.current) gsap.to(architectureRef.current.scale, { x: 0, y: 0, z: 0, duration, ease });
            break;
 
         case AppStage.PRODUCT:
@@ -97,6 +111,8 @@ export const HeroObject: React.FC = () => {
            }
            if (laptopRef.current) gsap.to(laptopRef.current.scale, { x: 0, y: 0, z: 0, duration, ease });
            if (phoneRef.current) gsap.to(phoneRef.current.scale, { x: 0, y: 0, z: 0, duration, ease });
+           if (fluidRef.current) gsap.to(fluidRef.current.scale, { x: 0, y: 0, z: 0, duration, ease });
+           if (architectureRef.current) gsap.to(architectureRef.current.scale, { x: 0, y: 0, z: 0, duration, ease });
            break;
 
         case AppStage.HIDDEN:
@@ -105,6 +121,8 @@ export const HeroObject: React.FC = () => {
            }
            if (laptopRef.current) gsap.to(laptopRef.current.scale, { x: 0, y: 0, z: 0, duration, ease });
            if (phoneRef.current) gsap.to(phoneRef.current.scale, { x: 0, y: 0, z: 0, duration, ease });
+           if (fluidRef.current) gsap.to(fluidRef.current.scale, { x: 0, y: 0, z: 0, duration, ease });
+           if (architectureRef.current) gsap.to(architectureRef.current.scale, { x: 0, y: 0, z: 0, duration, ease });
            break;
       }
     });
@@ -141,32 +159,27 @@ export const HeroObject: React.FC = () => {
   });
 
   return (
-    <>
-      {/* Abstract Hero Knot */}
+    <group>
+      {/* Abstract Hero Object (ProcessModel) */}
       <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-          <mesh ref={meshRef}>
-            <torusKnotGeometry args={[1, 0.3, 128, 16]} />
-            <MeshDistortMaterial 
-              ref={materialRef}
-              color="#ffffff"
-              roughness={0.8}
-              metalness={0.1}
-              wireframe={true}
-              distort={0}
-              speed={2}
-            />
-          </mesh>
+          <ProcessModel ref={meshRef} materialRef={materialRef} />
       </Float>
 
-      {/* Device: Laptop (Code Stage) */}
+      {/* Architecture Model (Code Stage) */}
+      <Float speed={1} rotationIntensity={0.2} floatIntensity={0.2}>
+         <ArchitectureModel ref={architectureRef} scale={[0,0,0]} />
+      </Float>
+
+      {/* Fluid Particles (Motion Stage) */}
+      <FluidParticles ref={fluidRef} scale={[0,0,0]} />
+
+      {/* Legacy Devices (Keeping components available but hidden unless needed later) */}
       <group ref={laptopRef} scale={[0,0,0]} position={[0, -0.5, 0]}>
           <Laptop />
       </group>
-
-      {/* Device: Phone (Motion Stage) */}
       <group ref={phoneRef} scale={[0,0,0]}>
           <Phone />
       </group>
-    </>
+    </group>
   );
 };

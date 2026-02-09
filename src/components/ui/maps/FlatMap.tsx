@@ -1,39 +1,59 @@
 // @ts-nocheck
-import React, { useMemo } from 'react';
-import { Plane, Html, Grid } from '@react-three/drei';
+import React, { useMemo, useRef } from 'react';
+import { Plane, Html, useTexture } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { LOCATIONS, latLonToVector2 } from '../../../utils/geo';
 
 export const FlatMap: React.FC = () => {
-  const width = 8;
-  const height = 4;
+  const width = 10;
+  const height = 5;
+  const group = useRef<THREE.Group>(null);
+
+  // Load Earth texture (dark theme)
+  const texture = useTexture('https://unpkg.com/three-globe/example/img/earth-dark.jpg');
+  
+  // Animated scanline
+  const scanlineRef = useRef<THREE.Mesh>(null);
+  useFrame((state) => {
+      if (scanlineRef.current) {
+          // Move scanline up and down
+          scanlineRef.current.position.y = (Math.sin(state.clock.elapsedTime * 0.2) * (height / 2.2));
+      }
+  });
 
   const markers = useMemo(() => {
     return LOCATIONS.map((loc, i) => {
       const pos = latLonToVector2(loc.lat, loc.lon, width, height);
       return (
         <group key={i} position={pos}>
-           {/* Vertical Line Stick */}
-           <mesh position={[0, 0.5, 0]}>
-              <cylinderGeometry args={[0.01, 0.01, 1]} />
-              <meshBasicMaterial color="#00ff88" transparent opacity={0.5} />
+           {/* Marker Ring */}
+           <mesh position={[0, 0, 0.02]}>
+              <ringGeometry args={[0.03, 0.05, 32]} />
+              <meshBasicMaterial color="#00ff88" side={THREE.DoubleSide} />
            </mesh>
            
-           {/* Base Point */}
-           <mesh position={[0, 0, 0.01]}>
-              <circleGeometry args={[0.05, 16]} />
-              <meshBasicMaterial color="#00ff88" />
+           {/* Marker Dot */}
+           <mesh position={[0, 0, 0.02]}>
+              <circleGeometry args={[0.02, 16]} />
+              <meshBasicMaterial color="#ffffff" />
+           </mesh>
+           
+           {/* Vertical 'Hologram' Line */}
+           <mesh position={[0, 0.15, 0.02]}>
+              <planeGeometry args={[0.005, 0.3]} />
+              <meshBasicMaterial color="#00ff88" transparent opacity={0.3} />
            </mesh>
 
            {/* Label */}
-           <Html position={[0, 1.2, 0]} center>
-                <div className="bg-horizn-accent/10 border border-horizn-accent/50 px-2 py-1 rounded backdrop-blur-md">
-                    <div className="text-[10px] font-bold font-mono text-horizn-accent whitespace-nowrap">
-                        {loc.name}
+           <Html position={[0, 0.35, 0.02]} center zIndexRange={[100, 0]}>
+                <div className="flex flex-col items-center group cursor-pointer transition-transform hover:scale-110">
+                    <div className="bg-black/90 border border-horizn-accent/30 px-2 py-1 rounded backdrop-blur-md shadow-[0_0_10px_rgba(0,0,0,0.5)]">
+                        <div className="text-[9px] font-bold font-mono text-horizn-accent whitespace-nowrap uppercase tracking-wider">
+                            {loc.name}
+                        </div>
                     </div>
-                    <div className="text-[8px] font-mono text-white/50 text-center">
-                        {loc.lat.toFixed(1)}°N / {loc.lon.toFixed(1)}°W
-                    </div>
+                    <div className="h-2 w-px bg-horizn-accent/50" />
                 </div>
            </Html>
         </group>
@@ -42,32 +62,31 @@ export const FlatMap: React.FC = () => {
   }, []);
 
   return (
-    <group>
-        {/* Map Plane Background */}
-        <Plane args={[width, height]} position={[0, 0, -0.01]}>
-            <meshBasicMaterial color="#0a0a0a" transparent opacity={0.8} />
+    <group ref={group}>
+        {/* Map Plane */}
+        <Plane args={[width, height]} position={[0, 0, 0]}>
+            <meshStandardMaterial 
+                map={texture} 
+                roughness={0.7} 
+                metalness={0.4}
+                color="#888" // Tint to fit dark theme
+            />
         </Plane>
-
-        {/* Grid Lines */}
-        <Grid 
-            args={[width, height]} 
-            cellSize={0.5} 
-            cellThickness={1} 
-            cellColor="#1a1a1a" 
-            sectionSize={1} 
-            sectionThickness={1.5} 
-            sectionColor="#333" 
-            fadeDistance={20} 
-            rotation={[Math.PI/2, 0, 0]} // Rotate grid to match plane orientation if needed, but Plane is usually upright in this context? 
-            // Wait, Grid helper is usually flat on XZ. Our map is XY.
-            // Let's manually draw lines or rotate the group.
-        />
         
-        {/* Abstract World Outline (Simplified using points or lines for style) */}
-        {/* Since we can't load external geojson easily without fetching, we stick to the grid aesthetic */}
-        <mesh>
-            <planeGeometry args={[width + 0.5, height + 0.5]} />
-            <meshBasicMaterial color="#000" wireframe opacity={0.2} transparent />
+        {/* Grid Overlay for Tech feel */}
+        <Plane args={[width, height]} position={[0, 0, 0.01]}>
+             <meshBasicMaterial 
+                color="#00ff88" 
+                wireframe 
+                transparent 
+                opacity={0.03}
+             />
+        </Plane>
+        
+        {/* Horizontal Scanline Effect */}
+        <mesh ref={scanlineRef} position={[0, 0, 0.02]}>
+            <planeGeometry args={[width, 0.02]} />
+            <meshBasicMaterial color="#00ff88" transparent opacity={0.15} blending={THREE.AdditiveBlending} depthWrite={false} />
         </mesh>
 
         {markers}

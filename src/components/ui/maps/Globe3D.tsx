@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useRef, useMemo } from 'react';
 import { useFrame, useLoader } from '@react-three/fiber';
-import { Sphere, Html, OrbitControls } from '@react-three/drei';
+import { Sphere, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { LOCATIONS, latLonToVector3 } from '../../../utils/geo';
 
@@ -47,10 +47,7 @@ export const Globe3D: React.FC = () => {
   }, []);
 
   return (
-    <group>
-      <OrbitControls enableZoom={false} enablePan={false} minPolarAngle={Math.PI / 3} maxPolarAngle={Math.PI - Math.PI / 3} />
-      
-      <group ref={globeRef}>
+    <group ref={globeRef}>
           {/* Main Earth Sphere with Texture */}
           <Sphere args={[2, 64, 64]}>
             <meshStandardMaterial 
@@ -97,7 +94,6 @@ export const Globe3D: React.FC = () => {
              <torusGeometry args={[2.8, 0.005, 16, 100]} />
              <meshBasicMaterial color="#00ff88" transparent opacity={0.05} />
           </mesh>
-      </group>
     </group>
   );
 };

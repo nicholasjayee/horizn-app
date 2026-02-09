@@ -1,47 +1,15 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useStore, AppStage } from '../store/useStore';
 import { BeforeAfterSlider } from '../components/ui/tools/BeforeAfterSlider';
 import { SceneContainer } from '../components/3d/SceneContainer';
 import { Experience } from '../components/3d/Experience';
+import { Section } from '../components/ui/Section';
+import { MotionSection } from '../components/sections/MotionSection';
+import { CodeSection } from '../components/sections/CodeSection';
 
 gsap.registerPlugin(ScrollTrigger);
-
-// Helper Section Component
-const Section: React.FC<{ 
-  id: string; 
-  className?: string; 
-  children: React.ReactNode; 
-  onEnter: () => void 
-}> = ({ id, className, children, onEnter }) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const onEnterRef = useRef(onEnter);
-  onEnterRef.current = onEnter;
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-        ScrollTrigger.create({
-          trigger: ref.current,
-          start: "top 60%", 
-          end: "bottom 60%",
-          onEnter: () => onEnterRef.current(),
-          onEnterBack: () => onEnterRef.current(),
-        });
-    }, ref);
-    return () => ctx.revert();
-  }, []);
-
-  return (
-    <section 
-      ref={ref} 
-      id={id} 
-      className={`min-h-screen w-full flex flex-col justify-center items-center p-6 md:p-20 relative ${className}`}
-    >
-      {children}
-    </section>
-  );
-};
 
 export const Home: React.FC = () => {
   const setStage = useStore(state => state.setStage);
@@ -93,33 +61,11 @@ export const Home: React.FC = () => {
           </div>
         </Section>
 
-        {/* SCENE 2: THE CODE (Clay + Code) */}
-        <Section id="code" onEnter={handleEnterCode} className="items-start">
-          <div className="max-w-xl text-left">
-             <h2 className="text-5xl font-bold mb-4">Architecture &<br/>Engineering</h2>
-             <p className="text-lg text-white/70 mb-8 leading-relaxed">
-               We build robust, scalable digital infrastructures. Not just pretty faces, but powerful machines driven by clean, performant code.
-             </p>
-             <div className="flex gap-4">
-               <div className="bg-white/10 px-4 py-2 rounded-full font-mono text-xs">React</div>
-               <div className="bg-white/10 px-4 py-2 rounded-full font-mono text-xs">TypeScript</div>
-               <div className="bg-white/10 px-4 py-2 rounded-full font-mono text-xs">WebGL</div>
-             </div>
-          </div>
-        </Section>
+        {/* SCENE 2: THE CODE (Architecture) */}
+        <CodeSection onEnter={handleEnterCode} />
 
         {/* SCENE 3: THE MOTION (Rigged/Animated) */}
-        <Section id="motion" onEnter={handleEnterMotion} className="items-end">
-          <div className="max-w-xl text-right">
-             <h2 className="text-5xl font-bold mb-4 text-horizn-accent">Fluid Motion</h2>
-             <p className="text-lg text-white/70 mb-8 leading-relaxed">
-               Static is boring. We breathe life into pixels with advanced rigging, physics simulations, and seamless transitions.
-             </p>
-             <button className="border border-horizn-accent text-horizn-accent px-8 py-3 rounded hover:bg-horizn-accent hover:text-black transition-all uppercase font-bold tracking-widest">
-               See Animation Reel
-             </button>
-          </div>
-        </Section>
+        <MotionSection onEnter={handleEnterMotion} />
 
         {/* SCENE 4: THE POLISH (VFX/Bloom) */}
         <Section id="polish" onEnter={handleEnterPolish}>

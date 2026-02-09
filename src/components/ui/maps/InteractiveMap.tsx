@@ -1,42 +1,139 @@
 // @ts-nocheck
-import React, { useState, Suspense } from 'react';
+import React, { useState, Suspense, useRef, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { PerspectiveCamera, OrbitControls } from '@react-three/drei';
 import { Globe3D } from './Globe3D';
 import { FlatMap } from './FlatMap';
+import { NetworkMap } from './NetworkMap';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Globe, Map as MapIcon, Maximize2 } from 'lucide-react';
+import { Globe, Map as MapIcon, Share2, Plus, Minus } from 'lucide-react';
+
+// Wrapper to handle programmatic zoom since buttons are outside Canvas
+const MapControls = ({ viewMode, zoomTrigger }: { viewMode: string, zoomTrigger: { dir: 'in' | 'out', ts: number } | null }) => {
+    const controlsRef = useRef<any>(null);
+
+    useEffect(() => {
+        if (zoomTrigger && controlsRef.current) {
+            const step = 1.4; // Zoom step factor
+            if (zoomTrigger.dir === 'in') {
+                controlsRef.current.dollyIn(step);
+            } else {
+                controlsRef.current.dollyOut(step);
+            }
+            controlsRef.current.update();
+        }
+    }, [zoomTrigger]);
+
+    // Return specific controls configuration based on active mode
+    if (viewMode === '3d') {
+        return (
+            <OrbitControls 
+                ref={controlsRef}
+                enableZoom={false} // Disable scroll zoom
+                enablePan={false} 
+                minPolarAngle={Math.PI / 3} 
+                maxPolarAngle={Math.PI - Math.PI / 3} 
+                minDistance={2.5}
+                maxDistance={12}
+            />
+        );
+    }
+
+    if (viewMode === '2d') {
+        return (
+            <OrbitControls 
+                ref={controlsRef}
+                enableRotate={false} 
+                enableZoom={false} // Disable scroll zoom
+                minDistance={2}
+                maxDistance={7}
+            />
+        );
+    }
+
+    if (viewMode === 'network') {
+        return (
+            <OrbitControls 
+                ref={controlsRef}
+                enableRotate={true} 
+                enableZoom={false} // Disable scroll zoom
+                maxPolarAngle={Math.PI / 2.1} 
+                minDistance={5}
+                maxDistance={35}
+            />
+        );
+    }
+
+    return null;
+};
 
 export const InteractiveMap: React.FC = () => {
-  const [viewMode, setViewMode] = useState<'3d' | '2d'>('3d');
+  const [viewMode, setViewMode] = useState<'3d' | '2d' | 'network'>('3d');
+  const [zoomTrigger, setZoomTrigger] = useState<{ dir: 'in' | 'out', ts: number } | null>(null);
+
+  const handleZoom = (dir: 'in' | 'out') => {
+      setZoomTrigger({ dir, ts: Date.now() });
+  };
 
   return (
     <div className="w-full h-[500px] md:h-[600px] relative rounded-2xl overflow-hidden border border-white/10 bg-black/40 backdrop-blur-sm group">
       
       {/* UI Controls */}
-      <div className="absolute top-6 right-6 z-20 flex flex-col gap-2">
-        <button 
-            onClick={() => setViewMode('3d')}
-            className={`p-3 rounded-xl backdrop-blur-md border transition-all duration-300 ${viewMode === '3d' ? 'bg-horizn-accent text-black border-horizn-accent' : 'bg-black/50 text-white border-white/10 hover:border-white/30'}`}
-        >
-            <Globe size={20} />
-        </button>
-        <button 
-            onClick={() => setViewMode('2d')}
-            className={`p-3 rounded-xl backdrop-blur-md border transition-all duration-300 ${viewMode === '2d' ? 'bg-horizn-accent text-black border-horizn-accent' : 'bg-black/50 text-white border-white/10 hover:border-white/30'}`}
-        >
-            <MapIcon size={20} />
-        </button>
+      <div className="absolute top-6 right-6 z-20 flex flex-col gap-6">
+          {/* View Mode Switcher */}
+          <div className="flex flex-col gap-2">
+            <button 
+                onClick={() => setViewMode('3d')}
+                className={`p-3 rounded-xl backdrop-blur-md border transition-all duration-300 ${viewMode === '3d' ? 'bg-horizn-accent text-black border-horizn-accent' : 'bg-black/50 text-white border-white/10 hover:border-white/30'}`}
+                title="Globe View"
+            >
+                <Globe size={20} />
+            </button>
+            <button 
+                onClick={() => setViewMode('2d')}
+                className={`p-3 rounded-xl backdrop-blur-md border transition-all duration-300 ${viewMode === '2d' ? 'bg-horizn-accent text-black border-horizn-accent' : 'bg-black/50 text-white border-white/10 hover:border-white/30'}`}
+                title="Flat Map"
+            >
+                <MapIcon size={20} />
+            </button>
+            <button 
+                onClick={() => setViewMode('network')}
+                className={`p-3 rounded-xl backdrop-blur-md border transition-all duration-300 ${viewMode === 'network' ? 'bg-horizn-accent text-black border-horizn-accent' : 'bg-black/50 text-white border-white/10 hover:border-white/30'}`}
+                title="Infrastructure Network"
+            >
+                <Share2 size={20} />
+            </button>
+          </div>
+
+          {/* Zoom Controls */}
+          <div className="flex flex-col gap-2">
+            <button 
+                onClick={() => handleZoom('in')}
+                className="p-3 rounded-xl backdrop-blur-md border border-white/10 bg-black/50 text-white hover:bg-white/10 hover:border-white/30 transition-all duration-300"
+                title="Zoom In"
+            >
+                <Plus size={20} />
+            </button>
+            <button 
+                onClick={() => handleZoom('out')}
+                className="p-3 rounded-xl backdrop-blur-md border border-white/10 bg-black/50 text-white hover:bg-white/10 hover:border-white/30 transition-all duration-300"
+                title="Zoom Out"
+            >
+                <Minus size={20} />
+            </button>
+          </div>
       </div>
 
       {/* Stats Overlay */}
       <div className="absolute bottom-6 left-6 z-20 pointer-events-none">
           <div className="flex items-center gap-2 mb-2">
              <div className="w-2 h-2 bg-horizn-accent rounded-full animate-pulse" />
-             <span className="text-xs font-mono text-horizn-accent tracking-widest">NETWORK ACTIVE</span>
+             <span className="text-xs font-mono text-horizn-accent tracking-widest">
+                {viewMode === 'network' ? 'INFRASTRUCTURE ONLINE' : 'NETWORK ACTIVE'}
+             </span>
           </div>
           <div className="text-[10px] font-mono text-white/40 space-y-1">
-             <p>NODES: 7</p>
+             <p>NODES: {viewMode === 'network' ? '6 CORE' : '7'}</p>
              <p>LATENCY: 24ms</p>
              <p>REGION: GLOBAL</p>
           </div>
@@ -45,19 +142,25 @@ export const InteractiveMap: React.FC = () => {
       {/* 3D Canvas */}
       <div className="w-full h-full cursor-move">
         <Canvas>
-            <PerspectiveCamera makeDefault position={[0, 0, 6]} fov={45} />
+            <PerspectiveCamera makeDefault position={viewMode === 'network' ? [8, 8, 8] : [0, 0, 6]} fov={45} />
             <ambientLight intensity={0.5} />
             <pointLight position={[10, 10, 10]} intensity={1} />
             
+            <MapControls viewMode={viewMode} zoomTrigger={zoomTrigger} />
+
             <Suspense fallback={null}>
                 <AnimatePresence mode="wait">
-                    {viewMode === '3d' ? (
+                    {viewMode === '3d' && (
                         <Globe3D key="globe" />
-                    ) : (
+                    )}
+                    {viewMode === '2d' && (
                         <group key="flat" rotation={[0, 0, 0]}>
-                            {/* Adjust camera for 2D view or move object */}
                             <FlatMap />
-                            <OrbitControls enableRotate={false} enableZoom={true} minZoom={0.5} maxZoom={2} />
+                        </group>
+                    )}
+                    {viewMode === 'network' && (
+                        <group key="network">
+                            <NetworkMap />
                         </group>
                     )}
                 </AnimatePresence>
