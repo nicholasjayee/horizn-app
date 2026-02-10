@@ -53,7 +53,7 @@ export const HeroObject: React.FC = () => {
                gsap.to(meshRef.current.position, { x: 2, y: 0, z: 0, duration, ease });
            }
            // Hide devices
-           if (laptopRef.current) gsap.to(laptopRef.current.scale, { x: 0, y: 0, z: 0, duration, ease }); // Replaced Laptop
+           if (laptopRef.current) gsap.to(laptopRef.current.scale, { x: 0, y: 0, z: 0, duration, ease });
            if (phoneRef.current) gsap.to(phoneRef.current.scale, { x: 0, y: 0, z: 0, duration: 0.5 });
            if (fluidRef.current) gsap.to(fluidRef.current.scale, { x: 0, y: 0, z: 0, duration, ease });
            
@@ -165,10 +165,8 @@ export const HeroObject: React.FC = () => {
           <ProcessModel ref={meshRef} materialRef={materialRef} />
       </Float>
 
-      {/* Architecture Model (Code Stage) */}
-      <Float speed={1} rotationIntensity={0.2} floatIntensity={0.2}>
-         <ArchitectureModel ref={architectureRef} scale={[0,0,0]} />
-      </Float>
+      {/* Architecture Model (Code Stage) - Removed Float wrapper for consistency with FluidParticles */}
+      <ArchitectureModel ref={architectureRef} scale={[0,0,0]} />
 
       {/* Fluid Particles (Motion Stage) */}
       <FluidParticles ref={fluidRef} scale={[0,0,0]} />

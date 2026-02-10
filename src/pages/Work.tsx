@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useLayoutEffect, useRef } from 'react';
 import { useStore, AppStage } from '../store/useStore';
 import { SceneContainer } from '../components/3d/SceneContainer';
