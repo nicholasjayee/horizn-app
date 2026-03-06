@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { ArrowLeft, Terminal } from 'lucide-react';
 
 export const BlogNotFound: React.FC = () => {
@@ -19,7 +19,7 @@ export const BlogNotFound: React.FC = () => {
         <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
         
         <Link 
-          to="/blog" 
+          href="/blog"
           className="inline-flex items-center gap-2 text-horizn-accent hover:gap-4 transition-all uppercase font-bold tracking-widest text-xs"
         >
           <ArrowLeft size={16} /> Return to Feed

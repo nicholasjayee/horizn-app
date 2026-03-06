@@ -1,10 +1,11 @@
+"use client";
 // @ts-nocheck
 import React, { useRef, useMemo, forwardRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Instances, Instance } from '@react-three/drei';
 import * as THREE from 'three';
 
-export const ArchitectureModel = forwardRef((props, ref) => {
+export const ArchitectureModel = forwardRef((props: any, ref) => {
   const group = useRef<THREE.Group>(null);
   
   // Create a grid of cubes

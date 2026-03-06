@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 
 export const Footer: React.FC = () => {
   return (
@@ -7,7 +7,7 @@ export const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-6 py-8 md:py-12 flex flex-col md:flex-row justify-between items-center gap-6 text-xs font-mono text-white/40">
         
         <div className="flex flex-col md:flex-row gap-4 md:gap-8 items-center text-center md:text-left">
-            <Link to="/" className="font-bold text-white/80 hover:text-horizn-accent transition-colors">HORIZN STUDIO</Link>
+            <Link href="/" className="font-bold text-white/80 hover:text-horizn-accent transition-colors">HORIZN STUDIO</Link>
             <span>© 2024. ALL RIGHTS RESERVED.</span>
         </div>
         

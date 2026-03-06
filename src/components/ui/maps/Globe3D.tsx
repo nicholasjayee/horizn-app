@@ -1,3 +1,4 @@
+"use client";
 // @ts-nocheck
 import React, { useRef, useMemo } from 'react';
 import { useFrame, useLoader } from '@react-three/fiber';

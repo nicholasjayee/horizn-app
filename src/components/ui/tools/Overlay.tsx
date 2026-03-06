@@ -1,12 +1,13 @@
+"use client";
 import React, { useEffect, useRef, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useStore, AppStage } from '../../store/useStore';
-import { PriceCalculator } from './tools/PriceCalculator';
-import { TeamCards } from './tools/TeamCards';
-import { VideoScrubber } from './tools/VideoScrubber';
-import { BeforeAfterSlider } from './tools/BeforeAfterSlider';
-import { PROJECTS } from '../../data/mockData';
+import { useStore, AppStage } from '../../../store/useStore';
+import { PriceCalculator } from './PriceCalculator';
+import { TeamCards } from './TeamCards';
+import { VideoScrubber } from './VideoScrubber';
+import { BeforeAfterSlider } from './BeforeAfterSlider';
+import { PROJECTS } from '../../../data/mockData';
 
 gsap.registerPlugin(ScrollTrigger);
 
