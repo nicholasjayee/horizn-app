@@ -91,21 +91,21 @@ export const InteractiveMap: React.FC = () => {
             <button 
                 onClick={() => setViewMode('3d')}
                 className={`p-3 rounded-xl backdrop-blur-md border transition-all duration-300 ${viewMode === '3d' ? 'bg-horizn-accent text-black border-horizn-accent' : 'bg-black/50 text-white border-white/10 hover:border-white/30'}`}
-                title="Globe View"
+                title="Globe View" aria-label="Globe View" aria-pressed={viewMode === '3d'}
             >
                 <Globe size={20} />
             </button>
             <button 
                 onClick={() => setViewMode('2d')}
                 className={`p-3 rounded-xl backdrop-blur-md border transition-all duration-300 ${viewMode === '2d' ? 'bg-horizn-accent text-black border-horizn-accent' : 'bg-black/50 text-white border-white/10 hover:border-white/30'}`}
-                title="Flat Map"
+                title="Flat Map" aria-label="Flat Map" aria-pressed={viewMode === '2d'}
             >
                 <MapIcon size={20} />
             </button>
             <button 
                 onClick={() => setViewMode('network')}
                 className={`p-3 rounded-xl backdrop-blur-md border transition-all duration-300 ${viewMode === 'network' ? 'bg-horizn-accent text-black border-horizn-accent' : 'bg-black/50 text-white border-white/10 hover:border-white/30'}`}
-                title="Infrastructure Network"
+                title="Infrastructure Network" aria-label="Infrastructure Network" aria-pressed={viewMode === 'network'}
             >
                 <Share2 size={20} />
             </button>
@@ -116,14 +116,14 @@ export const InteractiveMap: React.FC = () => {
             <button 
                 onClick={() => handleZoom('in')}
                 className="p-3 rounded-xl backdrop-blur-md border border-white/10 bg-black/50 text-white hover:bg-white/10 hover:border-white/30 transition-all duration-300"
-                title="Zoom In"
+                title="Zoom In" aria-label="Zoom In"
             >
                 <Plus size={20} />
             </button>
             <button 
                 onClick={() => handleZoom('out')}
                 className="p-3 rounded-xl backdrop-blur-md border border-white/10 bg-black/50 text-white hover:bg-white/10 hover:border-white/30 transition-all duration-300"
-                title="Zoom Out"
+                title="Zoom Out" aria-label="Zoom Out"
             >
                 <Minus size={20} />
             </button>
