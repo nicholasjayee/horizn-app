@@ -12,6 +12,9 @@ import { FluidParticles } from './models/FluidParticles';
 import { ArchitectureModel } from './models/ArchitectureModel';
 import gsap from 'gsap';
 
+const colorStart = new THREE.Color('#ffffff');
+const colorEnd = new THREE.Color('#888888');
+
 export const HeroObject: React.FC = () => {
   const meshRef = useRef<THREE.Group>(null);
   const materialRef = useRef<any>(null);
@@ -139,10 +142,8 @@ export const HeroObject: React.FC = () => {
         
         // Color: White -> Grey
         if (materialRef.current) {
-             const c1 = new THREE.Color('#ffffff');
-             const c2 = new THREE.Color('#888888');
-             const finalColor = c1.clone().lerp(c2, scrollProgress);
-             materialRef.current.color.set(finalColor);
+             // Zero-allocation lerp
+             materialRef.current.color.lerpColors(colorStart, colorEnd, scrollProgress);
              
              materialRef.current.wireframe = scrollProgress <= 0.8;
         }
