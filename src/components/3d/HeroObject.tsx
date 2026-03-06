@@ -1,6 +1,6 @@
 "use client";
 // @ts-nocheck
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useStore, AppStage } from '../../store/useStore';
 import * as THREE from 'three';
@@ -22,6 +22,12 @@ export const HeroObject: React.FC = () => {
   
   const currentStage = useStore(state => state.currentStage);
   
+  const colors = useMemo(() => ({
+    white: new THREE.Color('#ffffff'),
+    dark: new THREE.Color('#111111'),
+    grey: new THREE.Color('#888888')
+  }), []);
+
   useEffect(() => {
     const ctx = gsap.context(() => {
       const duration = 1;
@@ -36,8 +42,7 @@ export const HeroObject: React.FC = () => {
                gsap.to(meshRef.current.scale, { x: 1.5, y: 1.5, z: 1.5, duration, ease });
            }
            if (materialRef.current) {
-               const c = new THREE.Color('#ffffff');
-               gsap.to(materialRef.current.color, { r: c.r, g: c.g, b: c.b, duration, ease });
+               gsap.to(materialRef.current.color, { r: colors.white.r, g: colors.white.g, b: colors.white.b, duration, ease });
                gsap.to(materialRef.current, { roughness: 0.8, metalness: 0.1, distort: 0.3, duration, ease });
                materialRef.current.wireframe = true;
            }
@@ -87,8 +92,7 @@ export const HeroObject: React.FC = () => {
                gsap.to(meshRef.current.rotation, { x: Math.PI / 2, y: 0, z: 0, duration, ease });
            }
            if (materialRef.current) {
-               const c = new THREE.Color('#111111');
-               gsap.to(materialRef.current.color, { r: c.r, g: c.g, b: c.b, duration, ease });
+               gsap.to(materialRef.current.color, { r: colors.dark.r, g: colors.dark.g, b: colors.dark.b, duration, ease });
                gsap.to(materialRef.current, { roughness: 0.1, metalness: 0.9, distort: 0, duration, ease });
                materialRef.current.wireframe = false;
            }
@@ -105,8 +109,7 @@ export const HeroObject: React.FC = () => {
                gsap.to(meshRef.current.rotation, { x: 0, y: 0, z: 0, duration, ease });
            }
            if (materialRef.current) {
-               const c = new THREE.Color('#ffffff');
-               gsap.to(materialRef.current.color, { r: c.r, g: c.g, b: c.b, duration, ease });
+               gsap.to(materialRef.current.color, { r: colors.white.r, g: colors.white.g, b: colors.white.b, duration, ease });
                gsap.to(materialRef.current, { roughness: 0.8, metalness: 0.1, distort: 0, duration, ease });
                materialRef.current.wireframe = false;
            }
@@ -139,9 +142,7 @@ export const HeroObject: React.FC = () => {
         
         // Color: White -> Grey
         if (materialRef.current) {
-             const c1 = new THREE.Color('#ffffff');
-             const c2 = new THREE.Color('#888888');
-             const finalColor = c1.clone().lerp(c2, scrollProgress);
+             const finalColor = colors.white.clone().lerp(colors.grey, scrollProgress);
              materialRef.current.color.set(finalColor);
              
              materialRef.current.wireframe = scrollProgress <= 0.8;

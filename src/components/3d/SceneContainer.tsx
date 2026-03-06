@@ -17,8 +17,8 @@ export const SceneContainer: React.FC<SceneContainerProps> = ({ children }) => {
           shadows 
           gl={{ antialias: false, stencil: false, alpha: false }}
           camera={{ position: [0, 0, 5], fov: 50 }}
-          onCreated={({ scene }) => { scene.background = new THREE.Color('#0a0a0a') }}
         >
+          <color attach="background" args={['#0a0a0a']} />
            <Suspense fallback={null}>
               {children}
            </Suspense>
