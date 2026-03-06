@@ -1,3 +1,4 @@
+"use client";
 // @ts-nocheck
 import React from 'react';
 import { Environment, PerspectiveCamera } from '@react-three/drei';
@@ -26,7 +27,7 @@ export const Experience: React.FC = () => {
       <Environment preset={currentStage === AppStage.POLISH ? "city" : "studio"} />
 
       {/* Post Processing */}
-      <EffectComposer enableNormalPass={false}>
+      <EffectComposer disableNormalPass={true}>
         {currentStage === AppStage.POLISH && (
           <Bloom luminanceThreshold={0.5} mipmapBlur intensity={1.5} radius={0.4} />
         )}

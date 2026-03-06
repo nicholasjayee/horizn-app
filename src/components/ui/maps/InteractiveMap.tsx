@@ -1,3 +1,4 @@
+"use client";
 // @ts-nocheck
 import React, { useState, Suspense, useRef, useEffect, useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';

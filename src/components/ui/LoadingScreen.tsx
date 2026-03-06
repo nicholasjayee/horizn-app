@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useEffect } from 'react';
 import { useProgress } from '@react-three/drei';
 import { suspend } from 'suspend-react';

@@ -1,3 +1,4 @@
+"use client";
 // @ts-nocheck
 import React, { useMemo, useRef } from 'react';
 import { Plane, Html, useTexture } from '@react-three/drei';

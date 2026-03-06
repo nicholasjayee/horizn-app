@@ -1,3 +1,4 @@
+"use client";
 // @ts-nocheck
 import React, { useRef, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';

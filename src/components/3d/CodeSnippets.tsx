@@ -1,3 +1,4 @@
+"use client";
 // @ts-nocheck
 import React from 'react';
 import { Float, Text } from '@react-three/drei';

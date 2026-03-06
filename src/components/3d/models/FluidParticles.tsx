@@ -1,9 +1,10 @@
+"use client";
 // @ts-nocheck
 import React, { useMemo, useRef, forwardRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
-export const FluidParticles = forwardRef((props, ref) => {
+export const FluidParticles = forwardRef((props: any, ref) => {
   const points = useRef<THREE.Points>(null);
   const count = 4000;
 
