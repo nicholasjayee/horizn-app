@@ -1,0 +1,3 @@
+## 2024-03-07 - Form Accessibility & Error Association
+**Learning:** This app's custom form implementations lack proper `id`/`htmlFor` associations and ARIA attributes for validation errors, making it difficult for screen reader users to understand input requirements and error states.
+**Action:** When working with forms or inputs, always ensure labels use `htmlFor` pointing to the input's `id`. For inputs with validation, link the error message using `aria-describedby`, set `aria-invalid="true"` when in error state, and give the error message `role="alert"`. Add `focus-visible` styles to custom interactive elements (like inquiry type buttons).
