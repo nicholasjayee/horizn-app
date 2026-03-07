@@ -31,7 +31,7 @@ export const Header: React.FC = () => {
       </nav>
 
       {/* Mobile Menu Toggle */}
-      <button onClick={toggleMenu} className="md:hidden relative z-50 mix-blend-difference">
+      <button onClick={toggleMenu} aria-label={isMenuOpen ? "Close menu" : "Open menu"} aria-expanded={isMenuOpen} className="md:hidden relative z-50 mix-blend-difference">
         {isMenuOpen ? <X /> : <Menu />}
       </button>
 
