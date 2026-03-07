@@ -64,9 +64,15 @@ const ServerBlock = ({ position, type, name }: any) => {
 };
 
 const ConnectionLine = ({ start, end }: { start: THREE.Vector3, end: THREE.Vector3 }) => {
-   if (!start || !end) return null;
-   const s = start.clone().setY(0.2);
-   const e = end.clone().setY(0.2);
+   const { s, e } = useMemo(() => {
+     if (!start || !end) return { s: null, e: null };
+     return {
+       s: start.clone().setY(0.2),
+       e: end.clone().setY(0.2)
+     };
+   }, [start, end]);
+
+   if (!s || !e) return null;
    
    return (
      <group>
@@ -78,8 +84,10 @@ const ConnectionLine = ({ start, end }: { start: THREE.Vector3, end: THREE.Vecto
 
 const Packet = ({ start, end }: { start: THREE.Vector3, end: THREE.Vector3 }) => {
   const ref = useRef<THREE.Mesh>(null);
-  const speed = Math.random() * 0.5 + 0.5;
-  const offset = Math.random();
+  const { speed, offset } = useMemo(() => ({
+    speed: Math.random() * 0.5 + 0.5,
+    offset: Math.random()
+  }), []);
   
   useFrame((state) => {
     // Robust safety check
