@@ -45,8 +45,9 @@ export const ContactForm: React.FC = () => {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-1">
-            <label className={labelClasses}>Identity // Name</label>
+            <label htmlFor="name" className={labelClasses}>Identity // Name</label>
             <input 
+              id="name"
               type="text" 
               required
               value={formState.name}
@@ -57,16 +58,19 @@ export const ContactForm: React.FC = () => {
           </div>
           <div className="space-y-1">
             <div className="flex justify-between items-baseline">
-                <label className={labelClasses}>Signal // Email</label>
+                <label htmlFor="email" className={labelClasses}>Signal // Email</label>
                 {validationError && (
-                    <span className="text-[10px] text-red-400 font-mono flex items-center gap-1 mb-1 animate-pulse">
+                    <span id="email-error" role="alert" className="text-[10px] text-red-400 font-mono flex items-center gap-1 mb-1 animate-pulse">
                         <AlertCircle size={10} /> {validationError}
                     </span>
                 )}
             </div>
             <input 
+              id="email"
               type="email" 
               required
+              aria-invalid={!!validationError}
+              aria-describedby={validationError ? "email-error" : undefined}
               value={formState.email}
               onChange={e => {
                   setFormState({...formState, email: e.target.value});
@@ -79,8 +83,8 @@ export const ContactForm: React.FC = () => {
         </div>
 
         <div className="space-y-1">
-            <label className={labelClasses}>Protocol // Inquiry Type</label>
-            <div className="grid grid-cols-3 gap-3">
+            <label id="inquiry-type-label" className={labelClasses}>Protocol // Inquiry Type</label>
+            <div role="group" aria-labelledby="inquiry-type-label" className="grid grid-cols-3 gap-3">
                 {['project', 'career', 'general'].map((type) => (
                     <button
                         key={type}
@@ -99,8 +103,9 @@ export const ContactForm: React.FC = () => {
         </div>
 
         <div className="space-y-1">
-          <label className={labelClasses}>Payload // Message</label>
+          <label htmlFor="message" className={labelClasses}>Payload // Message</label>
           <textarea 
+            id="message"
             required
             rows={4}
             value={formState.message}
