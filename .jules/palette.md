@@ -1,0 +1,3 @@
+## 2024-05-24 - Form Input Accessibility Bindings
+**Learning:** Found a recurring pattern of input elements lacking proper ARIA bindings (e.g., `htmlFor`, `id`, `aria-describedby` for errors, `aria-invalid`). Relying on adjacent DOM structures for screen readers instead of explicit bindings reduces form accessibility.
+**Action:** Always bind inputs directly to labels with `id` and `htmlFor`, and link dynamic error messages via `aria-describedby` to ensure immediate and accurate feedback for screen reader users.
